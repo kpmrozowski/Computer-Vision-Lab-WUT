@@ -2,5 +2,5 @@
 
 
 
-% model = fitsvm(featuresTrain, )
+model = fitsvm(featuresTrain, )
 
