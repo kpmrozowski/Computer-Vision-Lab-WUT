@@ -3,10 +3,10 @@
 function [featuresTrain, labelsTrain, featuresTest, labelsTest] = load_data()
 
 % Wielkość słownika
-words_cnt = 30 ;
+gradient_count = 30 ;
 
 % Detekcja cech
-% �?adowanie pełnego zbioru danych z automatycznym podziałem na klasy
+% �?adowanie pełnego zbioru danych z automatycznym podziałem na klasy
 % Zbiór danych pochodzi z publikacji: A. Quattoni, and A.Torralba. <http://people.csail.mit.edu/torralba/publications/indoor.pdf 
 % _Recognizing Indoor Scenes_>. IEEE Conference on Computer Vision and Pattern 
 % Recognition (CVPR), 2009.
@@ -15,8 +15,8 @@ words_cnt = 30 ;
 % http://web.mit.edu/torralba/www/indoor.html>
 
 % Wybór przykładowych klas i podział na zbiór treningowy i testowy
-imds = imageDatastore(".\INRIAPerson\my_train", "IncludeSubfolders", true, "LabelSource", "foldernames");
-imtest = imageDatastore(".\INRIAPerson\my_test", "IncludeSubfolders", true, "LabelSource", "foldernames");
+imds = imageDatastore("../INRIAPerson/96X160H96/Train/pos", "IncludeSubfolders", true, "LabelSource", "foldernames");
+imtest = imageDatastore("../INRIAPerson/70X134H96/Test/pos", "IncludeSubfolders", true, "LabelSource", "foldernames");
 %countEachLabel(imds)
 
 %% Wyznaczenie punktów charakterystycznych we wszystkich obrazach zbioru treningowego
@@ -49,20 +49,20 @@ for i=1:files_cnt
     curr_idx = curr_idx + length(all_points{i});
 end
 
-%% Tworzenie słownika
+%%
 
 % Klasteryzacja punktów 
-[idx, words, sumd, D] = kmeans(all_features, words_cnt, "MaxIter", 10000);
-% Wizualizacja wyliczonych słów
+[idx, words, sumd, D] = kmeans(all_features, gradient_count, "MaxIter", 10000);
+% Wizualizacja wyliczonych gradientów
 
-%% Wyznaczenie histogramów słów dla każdego obrazu treningowego
-file_hist = zeros(files_cnt, words_cnt);
+%% Wyznaczenie cech
+file_features_hog = zeros(files_cnt, gradient_count);
 for i=1:files_cnt
-    file_hist(i,:) = getFeatureHOGs(I);
+    file_features_hog(i,:) = getFeatureHOGs(I);
 end
 
 %% Wyznaczenie histogramów słów dla każdego obrazu testowego
-test_hist = zeros(length(imtest.Files), words_cnt);
+test_hist = zeros(length(imtest.Files), gradient_count);
 for i=1:length(imtest.Files)
     I = readImage(imtest.Files{i});
     pts = getFeaturePoints(I, feats_det, feats_uniform);
@@ -70,7 +70,7 @@ for i=1:length(imtest.Files)
     test_hist(i,:) = wordHist(feats, words);
 end
 
-featuresTrain = file_hist;
+featuresTrain = file_features_hog;
 featuresTest = test_hist;
 labelsTrain = imds.Labels;
 labelsTest = imtest.Labels;
@@ -96,8 +96,8 @@ function I = readImage(path)
 end
 
 function h = wordHist(feats, words)
-    words_cnt = size(words, 1);
+    gradient_count = size(words, 1);
     dis = pdist2(feats, words, 'squaredeuclidean');
     [~, lbl] = min(dis, [], 2);
-    h = histcounts(lbl, (1:words_cnt+1)-0.5, 'Normalization', 'probability');
+    h = histcounts(lbl, (1:gradient_count+1)-0.5, 'Normalization', 'probability');
 end
