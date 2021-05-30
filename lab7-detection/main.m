@@ -1,6 +1,7 @@
 [featuresTrain, labelsTrain, featuresTest, labelsTest] = load_data();
 
+%%
 
+model = fitcecoc(featuresTrain, labelsTrain);
 
-model = fitsvm(featuresTrain, )
-
+predicted_labels = predict(model, featuresTest);
