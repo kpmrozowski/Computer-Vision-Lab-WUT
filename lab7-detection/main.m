@@ -1,2 +1,6 @@
-[featuresTrain, labelsTrain, featuresTest, labelsTest] = load_data()
+[featuresTrain, labelsTrain, featuresTest, labelsTest] = load_data();
+
+
+
+% model = fitsvm(featuresTrain, )
 
