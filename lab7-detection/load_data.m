@@ -6,8 +6,8 @@ function [featuresTrain, labelsTrain, featuresTest, labelsTest] = load_data()
 gradient_count = 3780 ;
 
 % Wybór przykładowych klas i podział na zbiór treningowy i testowy
-imtrain = imageDatastore("INRIAPerson/trainJPG", "IncludeSubfolders", true, "LabelSource", "foldernames");
-imtest = imageDatastore("INRIAPerson/testJPG", "IncludeSubfolders", true, "LabelSource", "foldernames");
+imtrain = imageDatastore("INRIAPerson/train", "IncludeSubfolders", true, "LabelSource", "foldernames");
+imtest = imageDatastore("INRIAPerson/test", "IncludeSubfolders", true, "LabelSource", "foldernames");
 %countEachLabel(imds)
 
 %% Wyznaczenie punktów charakterystycznych we wszystkich obrazach zbioru treningowego
