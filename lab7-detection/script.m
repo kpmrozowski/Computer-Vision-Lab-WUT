@@ -15,10 +15,10 @@ sx = 70;
 sy = 134;
 step = 8;
 
-scale_step = 0.8;
+scale_step = 0.9;
 levels = 5;
 
-scale = 1.0;
+scale = 0.75;
 thr = 60;
 
 dets = [];

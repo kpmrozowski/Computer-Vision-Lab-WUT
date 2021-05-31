@@ -18,7 +18,7 @@ step = 8;
 scale_step = 0.8;
 levels = 5;
 
-scale = 1.0;
+scale = 2.0;
 thr = 60;
 
 dets = [];
@@ -47,8 +47,7 @@ for j=0:count_y-1
         [predicted_label, score] = predict(model, sub_hog);
         if (predicted_label == 'pos')
             %disp('pos')
-        
-            out(j+1, i+1) = score(2) - co;
+            out(j+1, i+1) = score(1);
         %else
             %disp('neg')
         end
@@ -56,7 +55,7 @@ for j=0:count_y-1
     end
 end
 
-best_score = max(max(out))
+best_score = min(min(out))
 
 figure;
 imagesc(out)
@@ -92,8 +91,8 @@ while 1
     filtered_dets = [filtered_dets; tmp_dets(i,:)];
     filtered_scores = [filtered_scores, m];
     ratio = bboxOverlapRatio(tmp_dets(i, :), tmp_dets);
-    tmp_dets = tmp_dets(ratio < 0.2, :);
-    tmp_scores = tmp_scores(ratio < 0.2);
+    tmp_dets = tmp_dets(ratio < 0.001, :);
+    tmp_scores = tmp_scores(ratio < 0.001);
     if size(tmp_dets, 1) < 1
         break
     end
@@ -101,7 +100,7 @@ end
 cnt = size(filtered_scores, 2);
 filtered_lbls = cell(cnt, 1);
 for i=1:cnt
-    filtered_lbls{i} = num2str(filtered_scores(i), '%.1f');
+    filtered_lbls{i} = num2str(-filtered_scores(i), '%.1f');
 end
 imshow(insertObjectAnnotation(It, "rectangle", filtered_dets, filtered_lbls));
 %%
